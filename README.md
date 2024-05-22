@@ -8,6 +8,7 @@
 ## 简单介绍
 
 这是一个适用于mbed os 6的库，用于驱动MAX7219控制的8*8的点阵屏，使用的是SPI协议
+
 这个库同时提供了硬件SPI和软件SPI两种选择，在我个人的使用中感觉软件SPI的适用范围更加广泛，所以放上来的库文件默认使用了软件SPI实现，如果要改为硬件SPI请修改头文件里对应的宏，具体方法会在后文指出
 
 ## 怎么使用这个库？
@@ -53,7 +54,9 @@ int main(void) {
 ### 需要特别提示的一点
 
 这个库默认使用软件模拟SPI，也可以通过修改头文件使用硬件SPI
+
 具体修改方法是：把Matirx.h文件的第23行的`#define _Matrix_8_Using_Simulated_SPI_`语句删除或注释掉
+
 需要注意的是，软件SPI没有对引脚的要求，只要支持GPIO即可；硬件SPI需要对应上对应的SPI引脚组合
 
 ### 类的各个方法的介绍
@@ -61,6 +64,7 @@ int main(void) {
 #### `matrix(PinName Matrix_IO_MOSI, PinName Matrix_IO_CLK,  PinName Matrix_IO_CS)`
 
 类的构造函数
+
 你一般不会直接调用这个函数，如果不知道这是什么，可以当他不存在
 
 - `Matrix_IO_MOSI` MOSI针脚
@@ -70,8 +74,11 @@ int main(void) {
 #### `buffer`
 
 类中的缓冲区，用于暂时存储将要让点阵屏显示的图案
+
 数据类型是`matrix::frame`，也就是`array<uint8_t,8>`
+
 这个库没有提供修改buffer内容的函数，而是选择了让用户可以直接访问buffer，是因为我认为用户才知道他们想要什么
+
 在修改后需要`SendBuffer`才能更改显示内容
 
 #### `operator<<(const frame &data)`
@@ -99,6 +106,7 @@ int main(void) {
 #### `ClearBuffer(void)`
 
 清除掉buffer的值，但是不会自动SendBuffer
+
 ~~那不就是`buffer.fill(0)`吗~~
 
 #### `Init_Setting(void)`
@@ -106,12 +114,15 @@ int main(void) {
 返回值：对自身的引用（看不懂可以当不存在）
 
 将所有的设置调整到推荐配置，或者重置所有设置
+
 一般不会调用这个函数，因为在构造函数里已经帮你调用过一次了
 
 #### `Set_Intensity(float intensity = 1.f)`
 
 通过设置占空比来改变矩阵灯珠的亮度
+
 默认值是1.0
+
 数据的允许范围是0.0到1.0，分别对应你所期望的亮度百分比
 
 #### `Set_MatrixTest(bool mode)`
@@ -119,6 +130,7 @@ int main(void) {
 返回值：对自身的引用（看不懂可以当不存在）
 
 开关MAX7219的DisplayTest模式
+
 在InitSetting里默认关闭，如果需要使用请配合数据手册
 
 #### `is_In_MatrixTest(void)`
@@ -130,6 +142,7 @@ int main(void) {
 返回值：对自身的引用（看不懂可以当不存在）
 
 开关MAX7219的Shutdown模式
+
 在InitSetting里默认关闭，如果需要使用请配合数据手册
 
 #### `is_In_Shutdown(void)`
@@ -139,7 +152,9 @@ int main(void) {
 #### `HelloWorld(void)`
 
 一个用于测试是否正常运行的样例，封装成了一个类方法
+
 理论上会显示一个笑脸
+
 会自动Sendbuffer，并且笑脸图案会覆盖现有的buffer的值
 
 ### 最后
